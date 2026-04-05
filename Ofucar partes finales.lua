@@ -54,15 +54,15 @@ button.MouseButton1Click:Connect(function()
         return
     end
 
-    -- convertir número a tabla de dígitos automáticamente
-    local tabla = {}
-    for i = 1, #numero do
-        table.insert(tabla, numero:sub(i,i))
-    end
+    -- convertir número a ASCII
+local tabla = {}
+for i = 1, #numero do
+    table.insert(tabla, string.byte(numero:sub(i,i)))
+end
 
-    local digitos = table.concat(tabla, ",")
+local digitos = table.concat(tabla, ",")
 
-    local codigo = [[
+local codigo = [[
 local function d(t)
     local s = ""
     for i = 1, #t do
@@ -71,9 +71,11 @@ local function d(t)
     return s
 end
 
-local k = 0
-for _,v in ipairs({]]..digitos..[[}) do
-    k = k * 10 + v
+local n={]]..digitos..[[}
+local k=0
+
+for i=1,#n do
+    k = k + ((n[i]-48) * (10 ^ (#n - i)))
 end
 
 if _ and _[k] then
@@ -83,7 +85,6 @@ else
     warn("Indice no válido:", k)
 end
 ]]
-
     output.Text = codigo
 
     if setclipboard then
